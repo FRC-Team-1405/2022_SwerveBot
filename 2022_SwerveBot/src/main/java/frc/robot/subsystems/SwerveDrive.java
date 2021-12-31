@@ -11,12 +11,14 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SwerveDrive extends SubsystemBase {
   /** Creates a new SwerveDrive. */ 
-  public static final double maxSpeed = 3.0; 
-  public static final double maxAngularSpeed = Math.PI;
+  //I think we can use these values as our speedlimit, if we make them configureable on Shuffleboard
+  public static final double maxVelocity = 3.0; //meters per second
+  public static final double maxAngularSpeed = Math.PI; 
   
   /** These variables store the location of each swerve module relative to the center of the robot. 
   Currently, I am just copying the ones from the example code. */
@@ -39,25 +41,26 @@ public class SwerveDrive extends SubsystemBase {
   private final SwerveDriveOdometry odometry = 
           new SwerveDriveOdometry(kinematics, gyro.getRotation2d()); 
 
-  public SwerveDrive() {
+  public SwerveDrive() { 
+    //I am making the maxVelocity configurable so we can ajdust our "speedlimit"
+    SmartDashboard.putNumber("Speed Limit", maxVelocity); 
+    //It may be useful to reset the gyro like this every boot-up. I believe we did this our old code
     gyro.reset();
   }
 
-  public void drive(double xSpeed, double ySpeed, double rotationSpeed, 
-  double speedLimit){ 
+  public void drive(double xSpeed, double ySpeed, double rotationSpeed){ 
     //var is cheesy but I don't know any better way to do it 
     var swerveModuleStates = kinematics.toSwerveModuleStates(
       fieldOriented() 
-      //unsure of whether the speedlimits should be multiplied here or somewhere else
-      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed * speedLimit, 
-                                              ySpeed * speedLimit, 
-                                              rotationSpeed * speedLimit, 
+      ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 
+                                              ySpeed, 
+                                              rotationSpeed, 
                                               gyro.getRotation2d()) 
-      : new ChassisSpeeds(xSpeed * speedLimit, 
-                          ySpeed * speedLimit, 
-                          rotationSpeed * speedLimit)); 
-    
-    SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxSpeed); 
+      : new ChassisSpeeds(xSpeed, 
+                          ySpeed, 
+                          rotationSpeed)); 
+    //This function should limit our speed to the value we set (maxVelocity)
+    SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxVelocity); 
     
     frontLeft.setDesiredState(swerveModuleStates[0]); 
     frontRight.setDesiredState(swerveModuleStates[1]); 

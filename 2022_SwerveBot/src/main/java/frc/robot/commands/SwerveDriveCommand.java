@@ -15,20 +15,18 @@ public class SwerveDriveCommand extends CommandBase {
   private static final double DEADBAND = 0.4; 
 
   private SwerveDrive driveBase; 
-  private DoubleSupplier getXSpeed; 
-  private DoubleSupplier getYSpeed; 
-  private DoubleSupplier getRotationSpeed; 
-  private DoubleSupplier getSpeedlimit; 
+  private double getXSpeed; 
+  private double getYSpeed; 
+  private double getRotationSpeed; 
 
-  public SwerveDriveCommand(DoubleSupplier getXSpeed, 
-                            DoubleSupplier getYSpeed, 
-                            DoubleSupplier getRotationSpeed, 
-                            DoubleSupplier getSpeedlimit, SwerveDrive driveBase) {
+  public SwerveDriveCommand(double getXSpeed, 
+                            double getYSpeed, 
+                            double getRotationSpeed, 
+                            SwerveDrive driveBase) {
     // Use addRequirements() here to declare subsystem dependencies. 
     this.getXSpeed = getXSpeed; 
     this.getYSpeed = getYSpeed; 
     this.getRotationSpeed = getRotationSpeed; 
-    this.getSpeedlimit = getSpeedlimit; 
     this.driveBase = driveBase; 
     addRequirements(driveBase);
   }
@@ -43,15 +41,14 @@ public class SwerveDriveCommand extends CommandBase {
     double xSpeed = deadband(getXSpeed); 
     double ySpeed = deadband(getYSpeed); 
     double rotationSpeed = deadband(getRotationSpeed); 
-    double speedLimit = getSpeedlimit.getAsDouble();
 
-    driveBase.drive(xSpeed, ySpeed, rotationSpeed, speedLimit);
+    driveBase.drive(xSpeed, ySpeed, rotationSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    driveBase.drive(0.0, 0.0, 0.0, 0.0);
+    driveBase.drive(0.0, 0.0, 0.0);
   }
 
   // Returns true when the command should end.
@@ -59,9 +56,9 @@ public class SwerveDriveCommand extends CommandBase {
   public boolean isFinished() {
     return false;
   } 
-
-  private double deadband(DoubleSupplier value){ 
-    if (Math.abs(value.getAsDouble()) < DEADBAND) return 0.0; 
-    return value.getAsDouble(); 
+  //We use this function to apply a prespecified deaband to the drive inputs
+  private double deadband(double value){ 
+    if (Math.abs(value) < DEADBAND) return 0.0; 
+    return value; 
   }
 }
