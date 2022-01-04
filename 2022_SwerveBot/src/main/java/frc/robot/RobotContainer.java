@@ -33,7 +33,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings(); 
 
-    driveBase.setDefaultCommand(new SwerveDriveCommand(getXSpeed(), getYSpeed(), getRotationSpeed(), driveBase));
+    driveBase.setDefaultCommand(new SwerveDriveCommand(this::getXSpeed, this::getYSpeed, this::getRotationSpeed, driveBase));
   } 
 
   public double getXSpeed(){ 

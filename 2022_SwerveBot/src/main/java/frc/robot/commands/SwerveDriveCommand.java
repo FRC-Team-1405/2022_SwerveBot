@@ -15,13 +15,13 @@ public class SwerveDriveCommand extends CommandBase {
   private static final double DEADBAND = 0.4; 
 
   private SwerveDrive driveBase; 
-  private double getXSpeed; 
-  private double getYSpeed; 
-  private double getRotationSpeed; 
+  private DoubleSupplier getXSpeed; 
+  private DoubleSupplier getYSpeed; 
+  private DoubleSupplier getRotationSpeed; 
 
-  public SwerveDriveCommand(double getXSpeed, 
-                            double getYSpeed, 
-                            double getRotationSpeed, 
+  public SwerveDriveCommand(DoubleSupplier getXSpeed, 
+                            DoubleSupplier getYSpeed, 
+                            DoubleSupplier getRotationSpeed, 
                             SwerveDrive driveBase) {
     // Use addRequirements() here to declare subsystem dependencies. 
     this.getXSpeed = getXSpeed; 
@@ -38,9 +38,9 @@ public class SwerveDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double xSpeed = deadband(getXSpeed); 
-    double ySpeed = deadband(getYSpeed); 
-    double rotationSpeed = deadband(getRotationSpeed); 
+    double xSpeed = deadband(getXSpeed.getAsDouble()); 
+    double ySpeed = deadband(getYSpeed.getAsDouble()); 
+    double rotationSpeed = deadband(getRotationSpeed.getAsDouble()); 
 
     driveBase.drive(xSpeed, ySpeed, rotationSpeed);
   }

@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 public class SwerveDrive extends SubsystemBase {
   /** Creates a new SwerveDrive. */ 
@@ -46,11 +48,13 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Speed Limit", maxVelocity); 
     //It may be useful to reset the gyro like this every boot-up. I believe we did this our old code
     gyro.reset();
+
+    Shuffleboard.getTab("Drive Base").add( this );
   }
 
   public void drive(double xSpeed, double ySpeed, double rotationSpeed){ 
     //var is cheesy but I don't know any better way to do it 
-    var swerveModuleStates = kinematics.toSwerveModuleStates(
+    SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
       fieldOriented() 
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 
                                               ySpeed, 
