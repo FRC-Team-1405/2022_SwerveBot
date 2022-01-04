@@ -53,7 +53,6 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void drive(double xSpeed, double ySpeed, double rotationSpeed){ 
-    //var is cheesy but I don't know any better way to do it 
     SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(
       fieldOriented() 
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 
