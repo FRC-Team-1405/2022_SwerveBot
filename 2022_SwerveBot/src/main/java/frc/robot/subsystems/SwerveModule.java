@@ -49,22 +49,22 @@ public class SwerveModule extends SubsystemBase {
   /** Returns the current velocity and rotation angle of the swerve module (in meters per second and 
   radians respectively) */
   public SwerveModuleState getState() { 
-    return new SwerveModuleState(getVelocityMetersPerSecond(), new Rotation2d(getAngleRadians())); 
+    return new SwerveModuleState(getVelocityMetersPerSecond(), new Rotation2d(getAngle())); 
   } 
   /** Allows us to command the swervemodule to any given veloctiy and angle, ultimately coming from our
   joystick inputs. */
   public void setDesiredState(SwerveModuleState desiredState) { 
     SwerveModuleState state = 
       //Later, we will create a SwerveModuleState from joystick inputs to use as our desiredState
-       SwerveModuleState.optimize(desiredState, new Rotation2d(getAngleRadians())); 
+       SwerveModuleState.optimize(desiredState, new Rotation2d(getAngle())); 
        /*We need this value back in sensor units/100ms to command the falcon drive motor Note: I do not know
        why the two doubles below need to have 'final' access modifiers*/
        final double driveOutput =  state.speedMetersPerSecond / velocityMeters; 
        //We need this value back in sensor units to command the falcon steering motor 
-       final double steeringOutput = state.angle.getRadians(); 
+       final double steeringOutput = state.angle.getDegrees(); 
        //Now we can command the steering motor and drive motor 
        driveMotor.set(ControlMode.Velocity, driveOutput); 
-       steeringMotor.set(ControlMode.MotionMagic, steeringOutput); 
+       steeringMotor.set(ControlMode.MotionMagic, getAngle() + steeringOutput); 
        /** "Motion Magic" is CTRE (the motor controller manufacturer) "mumbo-jumbo" for a profiled 
        position output. We have found from experiment that motors controlled with this control mode 
        tend to experience less mechanical jerk from sudden changes in acceleration, which the mechanical 
@@ -75,9 +75,9 @@ public class SwerveModule extends SubsystemBase {
   public double getVelocityMetersPerSecond(){ 
     return driveMotor.getSelectedSensorVelocity() * velocityMeters;
   } 
-  /** A getter for the angle of steering motor in radians. We intend to configure the steering encoder to 
+  /** A getter for the angle of steering motor in degrees. We intend to configure the steering encoder to 
   return radians automatically, so no conversion is needed here. */
-  public double getAngleRadians(){
+  public double getAngle(){
     return steeringEncoder.getPosition();
   } 
 }
