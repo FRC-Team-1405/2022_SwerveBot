@@ -6,12 +6,14 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import edu.wpi.first.wpilibj.SPI; 
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.Ultrasonic.Unit;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
@@ -19,20 +21,20 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 public class SwerveDrive extends SubsystemBase {
   /** Creates a new SwerveDrive. */ 
   //I think we can use these values as our speedlimit, if we make them configureable on Shuffleboard
-  public static final double maxVelocity = 3.0; //meters per second
+  public static final double maxVelocity = 1.0; //meters per second
   public static final double maxAngularSpeed = Math.PI; 
   
   /** These variables store the location of each swerve module relative to the center of the robot. 
   Currently, I am just copying the ones from the example code. */
-  private final Translation2d frontLeftLocation = new Translation2d(0.381, 0.381); 
-  private final Translation2d frontRightLocation = new Translation2d(0.381, -0.381); 
-  private final Translation2d backLeftLocation = new Translation2d(-0.381, 0.381); 
-  private final Translation2d backRightLocation = new Translation2d(-0.381, -0.381); 
+  private final Translation2d frontLeftLocation = new Translation2d(Units.inchesToMeters(12), Units.inchesToMeters(-10)); 
+  private final Translation2d frontRightLocation = new Translation2d(Units.inchesToMeters(12), Units.inchesToMeters(10)); 
+  private final Translation2d backLeftLocation = new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(-10)); 
+  private final Translation2d backRightLocation = new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(10)); 
   //Our swerve modules 
-  private final SwerveModule frontLeft = new SwerveModule(1, 5, 9); 
-  private final SwerveModule frontRight = new SwerveModule(2, 6, 10); 
-  private final SwerveModule backLeft = new SwerveModule(3, 7, 11); 
-  private final SwerveModule backRight = new SwerveModule(4, 8, 12); 
+  private final SwerveModule frontLeft = new SwerveModule(1, 21, 31); 
+  private final SwerveModule frontRight = new SwerveModule(2, 22, 32); 
+  private final SwerveModule backLeft = new SwerveModule(3, 23, 33); 
+  private final SwerveModule backRight = new SwerveModule(4, 24, 34); 
   //Our gyro (used to determine robot heading)
   private final AHRS gyro = new AHRS(SPI.Port.kMXP); 
   
@@ -77,7 +79,14 @@ public void updateOdometry(){
                                         frontRight.getState(), 
                                         backLeft.getState(), 
                                         backRight.getState());
-  } 
+  }  
+
+  public void periodic(){ 
+    SmartDashboard.putNumber("FL", frontLeft.getAngleNormalized());
+    SmartDashboard.putNumber("FR", frontRight.getAngleNormalized()); 
+    SmartDashboard.putNumber("BL", backLeft.getAngleNormalized()); 
+    SmartDashboard.putNumber("BR", backRight.getAngleNormalized()); 
+  }
 
   
   public boolean fieldOriented(){ 

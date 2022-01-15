@@ -1,0 +1,9 @@
+[
+  {
+    "artifact": "frcJava (in project 2022_SwerveBot)",
+    "target": "roborio",
+    "debugfile": "frcJava_roborio.debugconfig",
+    "project": "2022_SwerveBot",
+    "language": "java"
+  }
+]
