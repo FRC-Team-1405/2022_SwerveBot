@@ -8,6 +8,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Ultrasonic.Unit;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.SwerveDriveKinematics;
@@ -60,12 +61,14 @@ public class SwerveDrive extends SubsystemBase {
       ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, 
                                               ySpeed, 
                                               rotationSpeed, 
-                                              gyro.getRotation2d()) 
+                                              Rotation2d.fromDegrees(gyro.getAngle())) 
       : new ChassisSpeeds(xSpeed, 
                           ySpeed, 
                           rotationSpeed)); 
     //This function should limit our speed to the value we set (maxVelocity)
     SwerveDriveKinematics.normalizeWheelSpeeds(swerveModuleStates, maxVelocity); 
+
+    SmartDashboard.putNumber("angle", gyro.getAngle()); 
     
     frontLeft.setDesiredState(swerveModuleStates[0]); 
     frontRight.setDesiredState(swerveModuleStates[1]); 

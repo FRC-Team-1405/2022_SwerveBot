@@ -39,7 +39,7 @@ public class RobotContainer {
   } 
 
   public double getXSpeed(){ 
-    return driver.getY(Hand.kLeft);
+    return -driver.getY(Hand.kLeft);
   } 
 
   public double getYSpeed(){ 

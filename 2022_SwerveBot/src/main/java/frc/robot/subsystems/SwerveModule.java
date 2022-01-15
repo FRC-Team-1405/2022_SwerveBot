@@ -88,10 +88,12 @@ public class SwerveModule extends SubsystemBase {
         System.out.printf("Steering %6.2f %6.2f %6.2f", getAngle(), getAngleNormalized(), state.angle.getDegrees());
       }
 
-      SmartDashboard.putNumber("output", target);
       //Now we can command the steering motor and drive motor 
+      SmartDashboard.putNumber("output", target);
+      if ( percentVoltage != 0 ){
+        steeringMotor.set(ControlMode.Position, target); 
+      }
       driveMotor.set(ControlMode.PercentOutput, percentVoltage); 
-      steeringMotor.set(ControlMode.Position, target); 
       /** "Motion Magic" is CTRE (the motor controller manufacturer) "mumbo-jumbo" for a profiled 
        position output. We have found from experiment that motors controlled with this control mode 
       tend to experience less mechanical jerk from sudden changes in acceleration, which the mechanical 
